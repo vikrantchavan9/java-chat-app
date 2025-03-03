@@ -161,7 +161,7 @@ public class ChatClientGUI {
 
      private void displayMessage(String text) {
           JPanel messagePanel = new JPanel();
-          messagePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+          messagePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2)); // Reduce horizontal and vertical gaps
 
           String[] words = text.split(" ");
           for (String word : words) {
@@ -172,26 +172,34 @@ public class ChatClientGUI {
                                    "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/" + emojiCode + ".png")
                                    .toURL();
                          ImageIcon emojiIcon = new ImageIcon(
-                                   new ImageIcon(url).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+                                   new ImageIcon(url).getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH));
                          JLabel emojiLabel = new JLabel(emojiIcon);
                          messagePanel.add(emojiLabel);
                     } catch (Exception e) {
-                         messagePanel.add(new JLabel(word)); // Fallback to text if error
+                         messagePanel.add(new JLabel(word + " ")); // Fallback to text if error
                     }
                } else {
                     messagePanel.add(new JLabel(word + " "));
                }
           }
 
+          // Ensure minimum spacing
+          messagePanel.setMaximumSize(new Dimension(chatPanel.getWidth(), 30)); // Limit message height
+
           chatPanel.add(messagePanel);
           chatPanel.revalidate();
           chatPanel.repaint();
+
+          // Auto-scroll to the bottom
+          SwingUtilities.invokeLater(
+                    () -> scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
      }
 
      private void listenForMessages() {
           while (in.hasNextLine()) {
                String message = in.nextLine();
-               displayMessage(message + "\n");
+               SwingUtilities.invokeLater(() -> displayMessage(message));
+
           }
      }
 
