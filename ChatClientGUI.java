@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URL;
@@ -9,6 +7,8 @@ import java.net.URI;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ChatClientGUI {
      private String username;
@@ -73,15 +73,15 @@ public class ChatClientGUI {
           // Create an emoji button next to the message field
           emojiButton = new JButton("😀"); // Button with emoji icon
           emojiButton.setFont(new Font("Arial", Font.PLAIN, 18));
-          emojiButton.addActionListener(e -> showEmojiPicker()); // Click event
+          emojiButton.addActionListener(_ -> showEmojiPicker()); // Click event
 
           // Add the emoji button to the message input panel
           inputPanel.add(messageField, BorderLayout.CENTER);
           inputPanel.add(emojiButton, BorderLayout.WEST); // Emoji button to the left
           inputPanel.add(sendButton, BorderLayout.EAST);
 
-          sendButton.addActionListener(e -> sendMessage());
-          messageField.addActionListener(e -> sendMessage());
+          sendButton.addActionListener(_ -> sendMessage());
+          messageField.addActionListener(_ -> sendMessage());
 
           frame.add(inputPanel, BorderLayout.SOUTH);
           frame.setVisible(true);
@@ -120,7 +120,7 @@ public class ChatClientGUI {
                               new ImageIcon(url).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
 
                     JMenuItem emojiItem = new JMenuItem(emojiIcon);
-                    emojiItem.addActionListener(e -> insertEmoji(":" + code + ":")); // Insert emoji code
+                    emojiItem.addActionListener(_ -> insertEmoji(":" + code + ":")); // Insert emoji code
                     emojiPopup.add(emojiItem);
                } catch (Exception e) {
                     e.printStackTrace();
@@ -149,10 +149,10 @@ public class ChatClientGUI {
                                    "<img src='https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f602.png' width='20'>");
 
                // Display formatted message in chat area
-               displayMessage("[" + timestamp + "] [You]: " + message);
+               displayMessage("[" + timestamp + "] [You]: " + formattedMessage);
 
                // Send plain text message to server
-               out.println("[" + timestamp + "] " + username + ": " + message);
+               out.println("[" + timestamp + "] " + username + ": " + formattedMessage);
 
                // Clear input field
                messageField.setText("");
@@ -175,6 +175,7 @@ public class ChatClientGUI {
                                    new ImageIcon(url).getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH));
                          JLabel emojiLabel = new JLabel(emojiIcon);
                          messagePanel.add(emojiLabel);
+
                     } catch (Exception e) {
                          messagePanel.add(new JLabel(word + " ")); // Fallback to text if error
                     }
